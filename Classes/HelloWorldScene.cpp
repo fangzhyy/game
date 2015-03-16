@@ -151,9 +151,9 @@ void HelloWorld::initBlockAction(Node* block)
 	float distance = displayTop - startV;
 	float duration = mMoveSpeed/(displayTop/distance);
 	auto act = MoveTo::create(duration, Vec2(blockH, displayTop));
-	auto callBack = CallFunc::create(CC_CALLBACK_1(HelloWorld::cleanCallback, this));
-	auto seq = Sequence::create(act, callBack);
-	block->runAction(seq);
+	//auto callBack = CallFunc::create(CC_CALLBACK_1(HelloWorld::cleanCallback, this));
+	//auto seq = Sequence::create(act, callBack);
+	//block->runAction(seq);
 	
 }
 
