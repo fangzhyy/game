@@ -154,7 +154,7 @@ void HelloWorld::initBlockAction(Node* block)
 	//auto callBack = CallFunc::create(CC_CALLBACK_1(HelloWorld::cleanCallback, this));
 	//auto seq = Sequence::create(act, callBack);
 	//block->runAction(seq);
-	int k = 0;
+	int k = 0000;
 	
 }
 
