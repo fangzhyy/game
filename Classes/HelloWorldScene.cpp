@@ -12,7 +12,7 @@ Scene* HelloWorld::createScene()
 
     // add layer as a child to scene
     scene->addChild(layer);
-vv
+
     // return the scene
     return scene;
 }
