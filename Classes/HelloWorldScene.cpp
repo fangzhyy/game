@@ -155,7 +155,7 @@ void HelloWorld::initBlockAction(Node* block)
 	//auto seq = Sequence::create(act, callBack);
 	//block->runAction(seq);
 	int k = 0000;
-	
+	xxx
 }
 
 void HelloWorld::initBlocks()
