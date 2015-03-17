@@ -31,8 +31,8 @@ private:
     
 private:
     float mMoveSpeed;
-    const unsigned int kBlockCountInRow = 4;
-    const unsigned int kBlockCountInColumn = 4;
+	static const unsigned int kBlockCountInRow = 4;
+    static const unsigned int kBlockCountInColumn = 4;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

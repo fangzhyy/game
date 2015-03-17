@@ -4,3 +4,6 @@ cocos2d/
 proj.ios_mac/newgame.xcodeproj/project.xcworkspace/xcuserdata/fangzh.xcuserdatad/UserInterfaceState.xcuserstate
 
 *.xcuserstate
+
+proj.win32/Debug.win32/
+proj.win32/newgame.opensdf
