@@ -12,11 +12,7 @@ public:
 
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();
-    void dividScreen();
-    void makeNewBlock();
-    void moveBlockTest();
     void initBlocks();
-    void moveMutiBlockTest();
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
@@ -24,13 +20,16 @@ public:
     CREATE_FUNC(HelloWorld);
 private:
     Vector<Block*> mBlocks;
-    void makeWholeBlock();
     void initBlockAction(Node* block);
     void cleanCallback(Node* block);
-    void moveCallback(Node* block);
-    
+    void moveToTopCallback(Node* block);
+    void moveOutOfScreenCallback(Node* block);
 private:
+	//如果是1，则表示block从最底部移动到屏幕顶端，需要一秒钟的时间。
     float mMoveSpeed;
+	float mSingleBlockHeight;
+	float mSingleBlockWidth;
+	int mDisplayHeight;
 	static const unsigned int kBlockCountInRow = 4;
     static const unsigned int kBlockCountInColumn = 4;
 };

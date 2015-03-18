@@ -26,10 +26,10 @@ bool HelloWorld::init()
     {
         return false;
     }
-	mMoveSpeed = 1.0;
+	mMoveSpeed = 5.0;
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
+	mDisplayHeight = Director::getInstance()->getVisibleSize().height;
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
@@ -75,85 +75,47 @@ bool HelloWorld::init()
     return true;
 }
 
-void HelloWorld::moveCallback(Node* block)
+void HelloWorld::moveToTopCallback(Node* block)
 {
-
+	//移动到画面顶端的时候，在尾部创建一个新的block
+	const float kBottomV = -1 * mSingleBlockHeight;
+	float offsetH = 0.0;
+	auto blk = Block::create(Color3B(0xff,0xff,0xff), Size(mSingleBlockWidth, mSingleBlockHeight));
+	blk->setPosition(Vec2(block->getPositionX(), kBottomV));
+	addChild(blk);
+	initBlockAction(blk);
+	//继续往画面外面移动
+	//需要跟之前的移动速度一样。
+	const float moveDistance = mSingleBlockHeight;
+	float duration = mMoveSpeed/(mDisplayHeight/moveDistance);
+	int posY = block->getPositionY();
+	auto act = MoveTo::create(duration, Vec2(block->getPositionX(), mDisplayHeight));
+	std::function<void (Node*)> ff = std::bind(&HelloWorld::cleanCallback, this, block);
+	auto callBack = CallFuncN::create(ff);
+	auto seq = Sequence::create(act, callBack, NULL);
+	block->runAction(seq);
 }
 
 void HelloWorld::cleanCallback(Node* block)
 {
+	//移动出屏幕之后清除block
+	assert(block != nullptr);
+	int posy = block->getPositionY();
 	removeChild(block);
-}
-
-
-
-void HelloWorld::dividScreen()
-{
-    Size displaySize = Director::getInstance()->getOpenGLView()->getVisibleSize();
-    
-}
-
-//使用一个node来容纳整个屏幕的内容。
-void HelloWorld::makeWholeBlock()
-{
-    
-    
-}
-
-void HelloWorld::moveBlockTest()
-{
-    //新建一个block，放在屏幕中间下部
-    auto director = Director::getInstance();
-    Size displaySize = director->getOpenGLView()->getVisibleSize();
-    float offsetH = displaySize.width/4.0;
-    float offsetV = displaySize.height/4.0;
-    auto block = Block::create(Color3B(0xff,0xff,0xff), Size(displaySize.width/4, displaySize.height/4));
-    block->setPosition(Vec2(offsetH, offsetV));
-    this->addChild(block);
-    auto action = MoveTo::create(2, Vec2(-100,-100));
-    block->runAction(action);
-    // pBlock =
-   // Block* pBlock = Block::initWithArgs(Color3B(0,0,0), Size(offsetH/2.0, offsetV));
-}
-
-void HelloWorld::moveMutiBlockTest()
-{
-    auto director = Director::getInstance();
-    Size displaySize = director->getOpenGLView()->getVisibleSize();
-    float singleBlockWidth = displaySize.width/4.0 - 4;
-    float singleBlockHeight = displaySize.height/4.0 - 4;
-    //建立16个block。
-	int offsetV = singleBlockHeight * -1;
-	float duration = 3;
-    for(int n = 0; n <5; n++){
-		for(int i = 0; i < 4; i++){
-			auto block = Block::create(Color3B(0xff, 0xff, 0xff), Size(singleBlockWidth, singleBlockHeight));
-			float offsetH = i * (singleBlockWidth + 2) + 2;
-			block->setPosition(offsetH, offsetV);
-			this->addChild(block);
-			float action_duration = duration * (displaySize.height - offsetV) / displaySize.height;
-			auto act = MoveTo::create(action_duration, Vec2(offsetH, displaySize.height));
-			
-			block->runAction(act);
-			
-		}
-		offsetV += singleBlockHeight + 2;
-    }
-    
-    
 }
 
 void HelloWorld::initBlockAction(Node* block)
 {
 	float startV = block->getPosition().y;
 	float blockH = block->getPosition().x;
-	float displayTop = Director::getInstance()->getVisibleSize().height;
-	float distance = displayTop - startV;
-	float duration = mMoveSpeed/(displayTop/distance);
-	auto act = MoveTo::create(duration, Vec2(blockH, displayTop));
-	//auto callBack = ;
-	//auto seq = Sequence::create(act, callBack);
-	//block->runAction(seq);
+	float destV = mDisplayHeight - mSingleBlockHeight; 
+	float distance = destV - startV;
+	float duration = mMoveSpeed/(mDisplayHeight/distance);
+	auto act = MoveTo::create(duration, Vec2(blockH, destV));
+	std::function<void (Node*)> ff = std::bind(&HelloWorld::moveToTopCallback, this, block);
+	auto callBack = CallFuncN::create(ff);
+	auto seq = Sequence::create(act, callBack, NULL);
+	block->runAction(seq);
 	
 }
 
@@ -161,22 +123,22 @@ void HelloWorld::initBlocks()
 {
 	auto director = Director::getInstance();
 	Size displaySize = director->getOpenGLView()->getVisibleSize();
-	float singleBlockWidth = displaySize.width/kBlockCountInRow;
-	float singleBlockHeight = displaySize.height/kBlockCountInColumn;
-	const float kBottomV = -1 * singleBlockHeight;
-	int totalCountInColumn = kBlockCountInColumn + 1;
+	mSingleBlockWidth = displaySize.width/kBlockCountInRow;
+	mSingleBlockHeight = displaySize.height/kBlockCountInColumn;
+	const float kBottomV = -1 * mSingleBlockHeight * kBlockCountInColumn;
+	int totalCountInColumn = kBlockCountInColumn;
 	float blockBottom = kBottomV;
 	for(int i = 0; i < totalCountInColumn; i++){
 		float offsetH = 0;
 		for(int j = 0; j < kBlockCountInRow; j++){
-			auto block = Block::create(Color3B(0xff, 0xff, 0xff), Size(singleBlockWidth, singleBlockHeight));
+			auto block = Block::create(Color3B(0xff, 0xff, 0xff), Size(mSingleBlockWidth, mSingleBlockHeight));
 			block->setPosition(Vec2(offsetH ,blockBottom));
-			offsetH += singleBlockWidth;
+			offsetH += mSingleBlockWidth;
 			addChild(block);
 			initBlockAction(block);
 
 		}
-		blockBottom += singleBlockHeight;
+		blockBottom += mSingleBlockHeight;
 	}
 	
 }
